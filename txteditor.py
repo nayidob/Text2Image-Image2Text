@@ -53,12 +53,19 @@ def set_environment(filename_text_image):
     tkinter.Label(canvas, text="^^ Loaded Image ^^", fg="blue").grid(row=3, column=0, sticky="sew")
     image_label = tkinter.Label(canvas, image=image_text)
 
+    image_text2 = ImageTk.PhotoImage(Image.open("encrypt_footer.png"))
+    image_label2 = tkinter.Label(canvas, image=image_text2)
+    image_label2.grid(row=5, column=0, sticky="ew", columnspan=4)
+
     format_buttons = tkinter.Frame(canvas, relief=tkinter.RAISED, bd=2)
     button_open = tkinter.Button(format_buttons, text="Open Text",
                                  command=lambda: open_file(filename_text_image, txt_edit))
     button_load = tkinter.Button(format_buttons, text="Load Image",
                                  command=lambda: load_image(filename_text_image, image_label))
-    button_encrypt = tkinter.Button(canvas, text="ENCRYPT --> ", fg="red",
+    button_encrypt = tkinter.Button(canvas, text="Click"
+                                                 "\n to"
+                                                 "\n ENCRYPT"
+                                                 , fg="red", font="Calibri 12 bold",
                                     command=lambda: encrypt(filename_text_image))
     button_open.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
     button_load.grid(row=2, column=0, sticky="ew", padx=5)
