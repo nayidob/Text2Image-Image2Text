@@ -216,9 +216,6 @@ def show_result(filename_text_image, objects_info):
                                                    , fg="red", font="Calibri 12 bold",
                                  command=lambda: exit())
     button_show.grid(row=4, column=1, sticky="nsew", padx=10, pady=10)
-
-
-
     canvas_image.update()
     canvas_image.mainloop()
 
