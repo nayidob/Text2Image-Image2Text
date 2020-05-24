@@ -5,7 +5,7 @@ from PIL import Image
 
 
 def main():
-    filename = "prov.png"
+    filename = "Encrypted_Image_Text.png"
     original = Image.open(filename).convert("RGBA")
     original.show()
     text = get_text(original)

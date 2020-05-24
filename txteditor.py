@@ -15,13 +15,13 @@ import tkinter.scrolledtext as st
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 
-
 CANVAS_WIDTH = 600      # Width of drawing canvas in pixels
 CANVAS_HEIGHT = 600     # Height of drawing canvas in pixels
 PUNCTUATION = '.!?,-:;""'
 MAX_COLOR = 255
 MIN_COLOR = 0
 en_stops = set(stopwords.words('english'))
+
 
 def main():
     filename_text_image = {}
@@ -81,59 +81,12 @@ def set_environment(filename_text_image, objects_info):
     canvas.mainloop()
 
 
-def show_result(filename_text_image, objects_info):
-    canvas_image = make_canvas(CANVAS_WIDTH, CANVAS_HEIGHT // 2, 'Resulting Image')
-    image_filename = (filename_text_image["image"])
-    tkinter.Message(canvas_image, text="\n"
-                                       "=================================="
-                                       "\n"
-                                       "\nThe dimensions of your original image"
-                                       " in pixels are:"
-                                       "\n"
-                                       "\n Width %s pixels"
-                                       "\n Height %s pixels" % (objects_info["width_original_image"],
-                                                                objects_info["height_original_image"]),
-                    width=300, justify=tkinter.CENTER).grid(row=0, column=0, sticky="ew")
-
-    tkinter.Message(canvas_image, text="\n"
-                                       "=================================="
-                                       "\n"
-                                       "\nThe dimensions of your resulting image"
-                                       " in pixels are:"
-                                       "\n"
-                                       "\n Width %s pixels"
-                                       "\n Height %s pixels" % (objects_info["size"][0],
-                                                                objects_info["size"][1]),
-                    width=300, justify=tkinter.CENTER).grid(row=1, column=0, sticky="ew")
-
-    original_image = ImageTk.PhotoImage(Image.open(image_filename))
-    image_label = tkinter.Label(canvas_image, image=original_image)
-    image_label.grid(row=0, column=1, sticky="ew", columnspan=2)
-
-    modified_image = ImageTk.PhotoImage(Image.open("Encrypted_Image_Text.png"))
-    image_label2 = tkinter.Label(canvas_image, image=modified_image)
-    image_label2.grid(row=1, column=1, sticky="ew", columnspan=2)
-
-    canvas_image.update()
-    canvas_image.mainloop()
-
-def load_and_prepare_image(filename_text_image, objects_info):
-    image = Image.open(filename_text_image["image"]).convert("RGBA")
-    objects_info["width_original_image"], objects_info["height_original_image"] = image.size
-    original_aspect_ratio = objects_info["height_original_image"] / objects_info["width_original_image"]
-    print(original_aspect_ratio)
-    objects_info["size"] = get_size(objects_info["length"], original_aspect_ratio)
-    print(objects_info["size"])
-    final_image = image.resize((objects_info["size"][0], objects_info["size"][1]))
-    return final_image
-
-
 def encrypt(filename_text_image, objects_info):
     show_text_summary(filename_text_image, objects_info)
+
     final_image = load_and_prepare_image(filename_text_image, objects_info)
     final_image = put_text_within_image(objects_info["main_string"], final_image, objects_info["size"])
     final_image.save("Encrypted_Image_Text.png")
-
 
 
 def show_text_summary(filename_text_image, string_info):
@@ -164,7 +117,8 @@ def open_file(filename_text_image, txt_edit):
 def load_image(filename_text_image, image_label):
     """Open a file for editing."""
     filename = askopenfilename(
-        filetypes=[("Image Files", "*.png"), ("Image Files", "*.jpeg"), ("Image Files", "*.jpg"), ("All Files", "*.*")]
+        filetypes=[("Image Files", "*.png"), ("Image Files", "*.jpeg"),
+                   ("Image Files", "*.jpg"), ("All Files", "*.*")]
     )
     if not filename:
         return
@@ -176,6 +130,55 @@ def load_image(filename_text_image, image_label):
     image_label.configure(image=new_image)
     image_label.image = new_image
     filename_text_image["image"] = filename
+
+
+def load_and_prepare_image(filename_text_image, objects_info):
+    image = Image.open(filename_text_image["image"]).convert("RGBA")
+    objects_info["width_original_image"], objects_info["height_original_image"] = image.size
+    objects_info["original_aspect_ratio"] = \
+        objects_info["height_original_image"] / objects_info["width_original_image"]
+    objects_info["size"] = get_size(objects_info["length"], objects_info["original_aspect_ratio"])
+    final_image = image.resize((objects_info["size"][0], objects_info["size"][1]))
+    return final_image
+
+
+def show_result(filename_text_image, objects_info):
+    canvas_image = make_canvas(CANVAS_WIDTH, CANVAS_HEIGHT // 2, 'Resulting Image')
+    image_filename = (filename_text_image["image"])
+    tkinter.Message(canvas_image, text="\n"
+                                       "=================================="
+                                       "\n"
+                                       "\nThe dimensions of your original image"
+                                       " in pixels are:"
+                                       "\n"
+                                       "\n Width %s pixels"
+                                       "\n Height %s pixels"
+                                       "\n==================================" % (objects_info["width_original_image"],
+                                                                                 objects_info["height_original_image"]),
+                    width=300, justify=tkinter.CENTER).grid(row=0, column=0, sticky="ew")
+
+    tkinter.Message(canvas_image, text="\n"
+                                       "=================================="
+                                       "\n"
+                                       "\nThe dimensions of your resulting image"
+                                       " in pixels are:"
+                                       "\n"
+                                       "\n Width %s pixels"
+                                       "\n Height %s pixels"
+                                       "\n==================================" % (objects_info["size"][0],
+                                                                                 objects_info["size"][1]),
+                    width=300, justify=tkinter.CENTER).grid(row=1, column=0, sticky="ew")
+
+    original_image = ImageTk.PhotoImage(Image.open(image_filename))
+    image_label = tkinter.Label(canvas_image, image=original_image)
+    image_label.grid(row=0, column=1, sticky="ew", columnspan=2)
+
+    modified_image = ImageTk.PhotoImage(Image.open("Encrypted_Image_Text.png"))
+    image_label2 = tkinter.Label(canvas_image, image=modified_image)
+    image_label2.grid(row=1, column=1, sticky="ew", columnspan=2)
+
+    canvas_image.update()
+    canvas_image.mainloop()
 
 
 def make_canvas(width, height, title):
@@ -192,9 +195,6 @@ def make_canvas(width, height, title):
     canvas.pack()
     return canvas
 
-"""------
------------------------
----------"""
 
 def delete_punctuation(s):
     """
@@ -230,7 +230,6 @@ def get_counts_dict(filename):
                             counts[word] = 1
                         else:
                             counts[word] += 1
-
     return counts
 
 
@@ -243,6 +242,7 @@ def create_string_from_file(text_filename):
                 text_file += char
                 count += 1
     return text_file
+
 
 def frequency_of_20_top_words(text_filename, canvas_text):
     dict_words = get_counts_dict(text_filename)
@@ -316,7 +316,6 @@ def get_char(original, count):
 
 
 def get_size(length, original_aspect_ratio):
-    size = []
     sqr_len = math.sqrt(length)
     n = math.sqrt(length/original_aspect_ratio)
     m = define_m(n, original_aspect_ratio)
