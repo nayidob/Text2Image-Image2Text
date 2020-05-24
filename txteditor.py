@@ -35,18 +35,22 @@ def set_environment(filename_text_image):
     canvas.columnconfigure(4, minsize=50, weight=1)
 
     tkinter.Message(canvas, text="Welcome to the Text2Image Cryptographer"
-                                 "\n --------------------------"
+                                 "\n --------------------------",
+                    width=600, font="Calibri 24 bold",
+                    justify=tkinter.CENTER).grid(row=0, column=1, sticky="new")
+    tkinter.Message(canvas, text="\n"
+                                 "\n"
                                  "\n>>> This program hides a long text within an image <<<"
                                  "\n"
                                  "\nTo do that we kindly ask you to select a .txt file"
                                  " and then upload the image you want to use"
-                                 "\n(select files with buttons)", width=200,
+                                 "\n(select files with buttons)", width=200, font="Calibri 12",
                     justify=tkinter.CENTER).grid(row=0, column=0, sticky="ew")
     tkinter.Label(canvas, text="Scroll down to see your full text...",
-                  fg="blue").grid(row=0, column=1, sticky="sew")
+                  fg="blue").grid(row=0, column=1, sticky="sw")
     txt_edit = st.ScrolledText(canvas, font=("Calibri", 15))
     image_text = ImageTk.PhotoImage(Image.open("no_image_selected.png"))
-    tkinter.Label(canvas, text="Loaded Image ->", fg="blue").grid(row=3, column=0, sticky="sew")
+    tkinter.Label(canvas, text="^^ Loaded Image ^^", fg="blue").grid(row=3, column=0, sticky="sew")
     image_label = tkinter.Label(canvas, image=image_text)
 
     format_buttons = tkinter.Frame(canvas, relief=tkinter.RAISED, bd=2)
