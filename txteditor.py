@@ -3,7 +3,7 @@ File: pyramid.py
 ----------------
 YOUR DESCRIPTION HERE
 """
-
+import pathlib
 import tkinter
 import math
 import operator
@@ -32,9 +32,10 @@ def main():
 
 def set_environment(filename_text_image, objects_info):
     canvas = make_canvas(CANVAS_WIDTH, CANVAS_HEIGHT, 'Secret Image')
-    # animation loop
     canvas.rowconfigure(5, minsize=50, weight=1)
     canvas.columnconfigure(4, minsize=50, weight=1)
+
+    objects_info["show"] = True
 
     tkinter.Message(canvas, text="Welcome to the Text2Image Cryptographer"
                                  "\n --------------------------",
@@ -77,16 +78,25 @@ def set_environment(filename_text_image, objects_info):
     txt_edit.grid(row=1, column=1, sticky="nsew", rowspan=4, columnspan=4)
     image_label.grid(row=3, column=0, sticky="ew")
 
-    canvas.update()
-    canvas.mainloop()
+    while objects_info["show"]:
+        canvas.update()
 
 
 def encrypt(filename_text_image, objects_info):
-    show_text_summary(filename_text_image, objects_info)
+    canvas_text = show_text_summary(filename_text_image, objects_info)
 
     final_image = load_and_prepare_image(filename_text_image, objects_info)
     final_image = put_text_within_image(objects_info["main_string"], final_image, objects_info["size"])
     final_image.save("Encrypted_Image_Text.png")
+    button_show = tkinter.Button(canvas_text, text="Click to"
+                                                   "\n Show Result"
+                                                   , fg="red", font="Calibri 12 bold",
+                                 command=lambda: show_button(objects_info))
+    button_show.grid(row=8, column=0, sticky="nsew", padx=10, pady=10)
+
+
+def show_button(objects_info):
+    objects_info["show"] = False
 
 
 def show_text_summary(filename_text_image, string_info):
@@ -98,6 +108,7 @@ def show_text_summary(filename_text_image, string_info):
 
     string_info["length"] = count_char(text_filename, string_info["main_string"], canvas_text)
     frequency_of_20_top_words(text_filename, canvas_text)
+    return canvas_text
 
 
 def open_file(filename_text_image, txt_edit):
@@ -143,39 +154,70 @@ def load_and_prepare_image(filename_text_image, objects_info):
 
 
 def show_result(filename_text_image, objects_info):
-    canvas_image = make_canvas(CANVAS_WIDTH, CANVAS_HEIGHT // 2, 'Resulting Image')
+    top = tkinter.Toplevel()
+    top.title('Resulting Image')
+    canvas_image = tkinter.Canvas(top, width=CANVAS_WIDTH + 1, height=CANVAS_HEIGHT // 2 + 1)
+    canvas_image.pack()
     image_filename = (filename_text_image["image"])
     tkinter.Message(canvas_image, text="\n"
-                                       "=================================="
+                                       "========================"
+                                       "\n ORIGINAL IMAGE"
+                                       "\nThe dimensions of "
+                                       "your original image"
+                                       "\n in pixels are:"
                                        "\n"
-                                       "\nThe dimensions of your original image"
-                                       " in pixels are:"
-                                       "\n"
-                                       "\n Width %s pixels"
-                                       "\n Height %s pixels"
-                                       "\n==================================" % (objects_info["width_original_image"],
-                                                                                 objects_info["height_original_image"]),
+                                       "\n Width: %s pixels"
+                                       "\n Height: %s pixels"
+                                       "\n======================"
+                                       % (objects_info["width_original_image"],
+                                          objects_info["height_original_image"]),
                     width=300, justify=tkinter.CENTER).grid(row=0, column=0, sticky="ew")
 
     tkinter.Message(canvas_image, text="\n"
-                                       "=================================="
+                                       "========================"
+                                       "\n RESULTING IMAGE"
+                                       "\nThis image contains your"
+                                       "\nfull text."
+                                       "\nThe dimensions of "
+                                       "your resulting image"
+                                       "\n in pixels are:"
                                        "\n"
-                                       "\nThe dimensions of your resulting image"
-                                       " in pixels are:"
-                                       "\n"
-                                       "\n Width %s pixels"
-                                       "\n Height %s pixels"
-                                       "\n==================================" % (objects_info["size"][0],
-                                                                                 objects_info["size"][1]),
+                                       "\n Width: %s pixels"
+                                       "\n Height: %s pixels"
+                                       "\n======================="
+                                       % (objects_info["size"][0], objects_info["size"][1]),
                     width=300, justify=tkinter.CENTER).grid(row=1, column=0, sticky="ew")
 
-    original_image = ImageTk.PhotoImage(Image.open(image_filename))
+    original_image = Image.open(image_filename)
+    original_image = original_image.resize((200, int(objects_info["original_aspect_ratio"] * 200)))
+    original_image = ImageTk.PhotoImage(original_image)
     image_label = tkinter.Label(canvas_image, image=original_image)
     image_label.grid(row=0, column=1, sticky="ew", columnspan=2)
 
-    modified_image = ImageTk.PhotoImage(Image.open("Encrypted_Image_Text.png"))
+    modified_image = Image.open("Encrypted_Image_Text.png")
+    modified_image = modified_image.resize((200, int(objects_info["original_aspect_ratio"] * 200)))
+    modified_image = ImageTk.PhotoImage(modified_image)
     image_label2 = tkinter.Label(canvas_image, image=modified_image)
     image_label2.grid(row=1, column=1, sticky="ew", columnspan=2)
+
+    tkinter.Message(canvas_image, text="\n"
+                                       "*** These images have been resized in"
+                                       " order to fit the screen."
+                                       "\nThe encrypted image is in the root directory:"
+                                       "\n%s/Encrypted_Image_Text.png"
+                                       % (pathlib.Path().absolute()),
+                    width=600, justify=tkinter.LEFT).grid(row=3, column=0, sticky="w", columnspan=2)
+    tkinter.Message(canvas_image, text="\n"
+                                       "*** Use the Image2Text Program to Decrypt"
+                                       "your picture", fg="blue", font="Calibri 11 bold",
+                    width=600, justify=tkinter.LEFT).grid(row=4, column=0, sticky="w", columnspan=2)
+    button_show = tkinter.Button(canvas_image, text="Click to"
+                                                   "\n Exit"
+                                                   , fg="red", font="Calibri 12 bold",
+                                 command=lambda: exit())
+    button_show.grid(row=4, column=1, sticky="nsew", padx=10, pady=10)
+
+
 
     canvas_image.update()
     canvas_image.mainloop()
@@ -255,7 +297,6 @@ def frequency_of_20_top_words(text_filename, canvas_text):
                                       "\n"
                                       "\n %s" % s[0:20], width=300,
                     justify=tkinter.CENTER).grid(row=3, column=0, sticky="ew")
-    print(s[0:20])
 
 
 def count_char(text_filename, main_string, canvas_text):
@@ -263,7 +304,6 @@ def count_char(text_filename, main_string, canvas_text):
     tkinter.Message(canvas_text, text="%s characters" % char_count,
                     width=200, fg="blue", font="Calibri 16 bold",
                     justify=tkinter.CENTER).grid(row=2, column=0, sticky="ew")
-    print(text_filename + " contains " + str(char_count) + " characters")
     return char_count
 
 
@@ -287,7 +327,6 @@ def count_words(filename, canvas_text):
     tkinter.Message(canvas_text, text="%s words" % count,
                     width=200, fg="blue", font="Calibri 16 bold",
                     justify=tkinter.CENTER).grid(row=1, column=0, sticky="ew")
-    print(filename + " contains " + str(count) + " words")
 
 
 def put_text_within_image(main_string, final_image, size):
