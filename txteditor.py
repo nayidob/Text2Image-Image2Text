@@ -46,7 +46,7 @@ def set_environment(filename_text_image):
                   fg="blue").grid(row=0, column=1, sticky="sew")
     txt_edit = st.ScrolledText(canvas, font=("Calibri", 15))
     image_text = ImageTk.PhotoImage(Image.open("no_image_selected.png"))
-    tkinter.Label(canvas, text="Loaded Image ->", fg="blue").grid(row=2, column=0, sticky="sew")
+    tkinter.Label(canvas, text="Loaded Image ->", fg="blue").grid(row=3, column=0, sticky="sew")
     image_label = tkinter.Label(canvas, image=image_text)
 
     format_buttons = tkinter.Frame(canvas, relief=tkinter.RAISED, bd=2)
