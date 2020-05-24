@@ -27,7 +27,7 @@ def main():
     filename_text_image = {}
     objects_info = {}
     set_environment(filename_text_image, objects_info)
-    show_result(filename_text_image, objects_info)
+
 
 
 def set_environment(filename_text_image, objects_info):
@@ -76,7 +76,6 @@ def set_environment(filename_text_image, objects_info):
     format_buttons.grid(row=1, column=0, sticky="n")
     txt_edit.grid(row=1, column=1, sticky="nsew", rowspan=4, columnspan=4)
     image_label.grid(row=3, column=0, sticky="ew")
-
     canvas.update()
     canvas.mainloop()
 
@@ -106,16 +105,22 @@ def show_result(filename_text_image, objects_info):
                                                                 objects_info["size"][1]),
                     width=300, justify=tkinter.CENTER).grid(row=1, column=0, sticky="ew")
 
-    original_image = ImageTk.PhotoImage(Image.open(image_filename))
-    image_label = tkinter.Label(canvas_image, image=original_image)
-    image_label.grid(row=0, column=1, sticky="ew", columnspan=2)
+    #original_image2 = ImageTk.PhotoImage(Image.open(image_filename))
+    #image_label = tkinter.Label(canvas_image, image=original_image2)
+    #image_label.grid(row=0, column=1, sticky="ew", columnspan=2)
 
     modified_image = ImageTk.PhotoImage(Image.open("Encrypted_Image_Text.png"))
     image_label2 = tkinter.Label(canvas_image, image=modified_image)
     image_label2.grid(row=1, column=1, sticky="ew", columnspan=2)
 
+
     canvas_image.update()
     canvas_image.mainloop()
+
+
+def exit_func():
+    quit()
+
 
 def load_and_prepare_image(filename_text_image, objects_info):
     image = Image.open(filename_text_image["image"]).convert("RGBA")
@@ -133,7 +138,7 @@ def encrypt(filename_text_image, objects_info):
     final_image = load_and_prepare_image(filename_text_image, objects_info)
     final_image = put_text_within_image(objects_info["main_string"], final_image, objects_info["size"])
     final_image.save("Encrypted_Image_Text.png")
-
+    print(filename_text_image["image"])
 
 
 def show_text_summary(filename_text_image, string_info):
@@ -145,6 +150,12 @@ def show_text_summary(filename_text_image, string_info):
 
     string_info["length"] = count_char(text_filename, string_info["main_string"], canvas_text)
     frequency_of_20_top_words(text_filename, canvas_text)
+
+    button_show = tkinter.Button(canvas_text, text="Click to"
+                                                   "\n Show Result"
+                                                   , fg="red", font="Calibri 12 bold",
+                                 command=lambda: show_result(filename_text_image, string_info))
+    button_show.grid(row=8, column=0, sticky="nsew", padx=10, pady=10)
 
 
 def open_file(filename_text_image, txt_edit):
