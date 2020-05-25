@@ -51,11 +51,11 @@ def set_environment(filename_text_image, objects_info):
     tkinter.Label(canvas, text="Scroll down to see your full text...",
                   fg="blue").grid(row=1, column=2, sticky="se")
     txt_edit = st.ScrolledText(canvas, font=("Calibri", 15))
-    image_text = ImageTk.PhotoImage(Image.open("no_image_selected.png"))
+    image_text = ImageTk.PhotoImage(Image.open("dat/no_image_selected.png"))
     tkinter.Label(canvas, text="^^ Loaded Image ^^", fg="blue").grid(row=3, column=0, sticky="sew")
     image_label = tkinter.Label(canvas, image=image_text)
 
-    image_text2 = ImageTk.PhotoImage(Image.open("encrypt_footer.png"))
+    image_text2 = ImageTk.PhotoImage(Image.open("dat/encrypt_footer.png"))
     image_label2 = tkinter.Label(canvas, image=image_text2)
     image_label2.grid(row=5, column=0, sticky="ew", columnspan=4)
 
@@ -118,7 +118,7 @@ def show_confirmation():
     canvas_text = tkinter.Canvas(top, width=CANVAS_WIDTH // 2, height=CANVAS_HEIGHT // 2)
     canvas_text.pack()
 
-    decrypt_image = Image.open("Unlocked.png")
+    decrypt_image = Image.open("dat/unlocked.png")
     decrypt_image = ImageTk.PhotoImage(decrypt_image)
     image_label = tkinter.Label(canvas_text, image=decrypt_image, justify=tkinter.CENTER)
     image_label.grid(row=0, column=0, sticky="nsew")
