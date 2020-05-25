@@ -10,7 +10,6 @@ import operator
 import random
 from PIL import ImageTk
 from PIL import Image
-from nltk.corpus import stopwords
 import tkinter.scrolledtext as st
 from tkinter.filedialog import askopenfilename
 
@@ -20,7 +19,20 @@ CANVAS_HEIGHT = 600     # Height of drawing canvas in pixels
 PUNCTUATION = '.!?,-:;""'
 MAX_COLOR = 255
 MIN_COLOR = 0
-en_stops = set(stopwords.words('english'))
+en_stops = ['whom', 'out', 'ain', 'any', 'will', 'between', 'had', "shouldn't", 'was', "you'll", 'nor', 'now', 'it',
+            'those', "hadn't", 'shan', 'me', 'which', 'not', "won't", 'can', 'd', 'most', 'a', 'be', 'as', 'we', 'do',
+            'their', 'further', 'ours', 'ourselves', 'about', 'during', "don't", 'some', 'through', 'only', 'isn',
+            'while', 'have', 'very', 'that', 'our', 'did', 'until', 'should', 'because', 'where', 'he', 'or', 'so',
+            'and', 'the', "it's", "shan't", 'll', 'down', 'when', 'you', 'on', 'she', 'm', "aren't", "wasn't", 'an',
+            'here', 'there', 'all', 've', 'by', 'hasn', 'herself', 'shouldn', 'in', 'been', 'into', 'this', 'don', 't',
+            'than', "wouldn't", "you've", "isn't", 'yourselves', 'him', 'if', "you'd", 'then', 'y', 'itself', 'other',
+            'hers', 'is', 'my', 'why', 'myself', 'over', 'aren', 'needn', 'what', "she's", 'both', 's', "that'll",
+            'below', "didn't", 'themselves', "needn't", 'weren', 'for', 'has', 'mightn', "weren't", "couldn't", 'too',
+            'o', 'himself', 'against', 'under', 'doing', 'ma', 'am', 'again', 'having', 'once', 'off', 'from', 'above',
+            'i', 'to', 'these', 'mustn', 'how', 'they', 'your', "mustn't", 'being', 'after', 'haven', 'wouldn',
+            "haven't", 'before', 'just', 'at', 'of', 'does', 'were', "mightn't", 'yours', 'won', 'own', 'no', 'are',
+            'her', 'them', 'more', "you're", 'theirs', 'up', 'such', 'doesn', 're', 'yourself', 'but', 'few', 'hadn',
+            "hasn't", 'with', 'wasn', 'his', "doesn't", "should've", 'same', 'didn', 'who', 'couldn', 'its', 'each']
 
 
 def main():
