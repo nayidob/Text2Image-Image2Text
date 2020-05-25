@@ -5,12 +5,8 @@ YOUR DESCRIPTION HERE
 """
 import pathlib
 import tkinter
-import math
-import operator
-import random
-from PIL import ImageTk
 from PIL import Image
-
+from PIL import ImageTk
 import tkinter.scrolledtext as st
 from tkinter.filedialog import askopenfilename
 
@@ -20,7 +16,6 @@ CANVAS_HEIGHT = 600     # Height of drawing canvas in pixels
 PUNCTUATION = '.!?,-:;""'
 MAX_COLOR = 255
 MIN_COLOR = 0
-
 
 
 def main():
@@ -39,7 +34,7 @@ def set_environment(filename_text_image, objects_info):
     tkinter.Message(canvas, text="Welcome to the Image2Text Decrypter"
                                  "\n --------------------------",
                     width=600, font="Calibri 24 bold",
-                    justify=tkinter.CENTER).grid(row=0, column=1, sticky="new")
+                    justify=tkinter.CENTER).grid(row=0, column=1, sticky="new", columnspan=3)
     tkinter.Message(canvas, text="\n"
                                  "\n"
                                  "\n>>> This program extracts text from an image <<<"
@@ -50,53 +45,57 @@ def set_environment(filename_text_image, objects_info):
                                  "\n ", width=200, font="Calibri 12",
                     justify=tkinter.CENTER).grid(row=0, column=0, sticky="ew")
     tkinter.Label(canvas, text="Scroll down to see your full text...",
-                  fg="blue").grid(row=1, column=2, sticky="se")
+                  fg="blue").grid(row=2, column=3, sticky="se")
     txt_edit = st.ScrolledText(canvas, font=("Calibri", 15))
     image_text = ImageTk.PhotoImage(Image.open("dat/no_image_selected.png"))
     tkinter.Label(canvas, text="^^ Loaded Image ^^", fg="blue").grid(row=3, column=0, sticky="sew")
     image_label = tkinter.Label(canvas, image=image_text)
-
-    image_text2 = ImageTk.PhotoImage(Image.open("dat/encrypt_footer.png"))
-    image_label2 = tkinter.Label(canvas, image=image_text2)
-    image_label2.grid(row=5, column=0, sticky="ew", columnspan=4)
 
     format_buttons = tkinter.Frame(canvas, relief=tkinter.RAISED, bd=2)
     button_load = tkinter.Button(format_buttons, text="Load Image",
                                  command=lambda: load_image(filename_text_image, image_label))
     button_save = tkinter.Button(format_buttons, text="Save Text",
                                  command=lambda: save_file(objects_info))
+    tkinter.Message(canvas, text="\n"
+                                 "\n>>> Enter the Password <<<"
+                                 "\n ", width=200, font="Calibri 12", fg="red",
+                    justify=tkinter.LEFT).grid(row=1, column=1, sticky="ew")
+    password_entry = tkinter.Entry(canvas)
+    password_entry.grid(row=2, column=1)
     button_decrypt = tkinter.Button(canvas, text="Click to DECRYPT"
                                                  , fg="red", font="Calibri 12 bold",
-                                    command=lambda: decrypt(filename_text_image, txt_edit, objects_info))
+                                    command=lambda: decrypt(filename_text_image, txt_edit, objects_info, password_entry))
     button_load.grid(row=1, column=0, sticky="ew", padx=5)
     button_save.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
-    button_decrypt.grid(row=1, column=1, sticky="nsew", padx=10, pady=10)
+    button_decrypt.grid(row=2, column=2, sticky="nsw", padx=10, pady=10)
 
     format_buttons.grid(row=1, column=0, sticky="n")
-    txt_edit.grid(row=2, column=1, sticky="nsew", rowspan=3, columnspan=4)
+    txt_edit.grid(row=3, column=1, sticky="nsew", rowspan=2, columnspan=4)
     image_label.grid(row=3, column=0, sticky="ew")
-
 
     while objects_info["show"]:
         canvas.update()
 
 
-def decrypt(filename_text_image, text_edit, objects_info):
+def decrypt(filename_text_image, text_edit, objects_info, password_entry):
     filename = filename_text_image["image"]
     original = Image.open(filename).convert("RGBA")
-    objects_info["text"] = get_text(original)
+    objects_info["text"] = get_text(original, password_entry)
     show_text(text_edit, objects_info["text"])
 
 
-def get_text(image):
+def get_text(image, password_entry):
     count = 0
     text = ""
+    if password_entry.get() != '':
+        password = int(password_entry.get())
     width, height = image.size
     pixels = image.load()
     for x in range(width):
         for y in range(height):
             red, green, blue, alpha = pixels[x, y]
-            value = int(255 - alpha)
+            alpha = (alpha - password) % 256
+            value = int(alpha)
             text += chr(value)
             count += 1
     return text

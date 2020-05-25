@@ -19,12 +19,13 @@ the aspect ratio. ENJOY!!
 by Jonathan Nayid Orozco for Code in Place, Stanford, May 2020
 """
 # Importing Libraries
+import math
+import random
 import pathlib
 import tkinter
-import math
 import operator
-from PIL import ImageTk
 from PIL import Image
+from PIL import ImageTk
 import tkinter.scrolledtext as st
 from tkinter.filedialog import askopenfilename
 
@@ -34,6 +35,8 @@ CANVAS_HEIGHT = 600     # Height of drawing canvas in pixels
 PUNCTUATION = '.!?,-:;""'
 MAX_COLOR = 255
 MIN_COLOR = 0
+MIN_NUM = 100000
+MAX_NUM = 999999
 # English Language Stop Words
 en_stops = ['whom', 'out', 'ain', 'any', 'will', 'between', 'had', "shouldn't", 'was', "you'll", 'nor', 'now', 'it',
             'those', "hadn't", 'shan', 'me', 'which', 'not', "won't", 'can', 'd', 'most', 'a', 'be', 'as', 'we', 'do',
@@ -190,7 +193,7 @@ def encrypt(filename_text_image, objects_info):
     # Loads the original image and resized it according to the length of the text
     final_image = load_and_prepare_image(filename_text_image, objects_info)
     # Magic is done! Puts the text in the image
-    final_image = put_text_within_image(objects_info["main_string"], final_image, objects_info["size"])
+    final_image = put_text_within_image(objects_info["main_string"], final_image, objects_info["size"], objects_info)
     # Save the resulting encrypted image
     final_image.save("Encrypted_Image_Text.png")
     # Creates a Button to Show the Final Result, calls out show_button()
@@ -259,7 +262,7 @@ def load_and_prepare_image(filename_text_image, objects_info):
     return final_image
 
 
-def put_text_within_image(main_string, final_image, size):
+def put_text_within_image(main_string, final_image, size, objects_info):
     """
     This function embed the text within the image using the alpha channel
     :param main_string: string with ALL the characters of the .txt file
@@ -270,6 +273,7 @@ def put_text_within_image(main_string, final_image, size):
     count = 0
     width, height = final_image.size
     # Load pixels from image
+    create_random(objects_info)
     pixels = final_image.load()
     for x in range(width):
         for y in range(height):
@@ -280,14 +284,27 @@ def put_text_within_image(main_string, final_image, size):
                 char_number = get_char(main_string, count)
                 # Puts the ASCII value in the alpha channel.
                 # It was necessary to do 255 - value in order to get a lighter image
-                pixels[x, y] = (red, green, blue, 255 - char_number)
+                char_number = get_rand(char_number, objects_info)
+                pixels[x, y] = (red, green, blue, char_number)
+                #pixels[x, y] = (red, green, blue, 255 - char_number)
             else:
                 # For the pixels that are redundant, meaning the ones left
                 # after placing the whole text, will be filled with spaces
-                pixels[x, y] = (red, green, blue, 255 - 32)
+                char_number = get_rand(32, objects_info)
+                pixels[x, y] = (red, green, blue, char_number)
             count += 1
     # Return the modified canvas
     return final_image
+
+
+def create_random(objects_info):
+    objects_info["rand_num"] = random.randint(MIN_NUM, MAX_NUM)
+
+
+def get_rand(char_number, objects_info):
+    rand_eq = char_number + objects_info["rand_num"]
+    rand_eq = rand_eq % 256
+    return rand_eq
 
 
 def show_result(filename_text_image, objects_info):
@@ -362,8 +379,9 @@ def show_result(filename_text_image, objects_info):
                     width=600, justify=tkinter.LEFT).grid(row=3, column=0, sticky="w", columnspan=2)
     # Shows message about decryption process
     tkinter.Message(canvas_image, text="\n"
-                                       "*** Use the Image2Text Program to Decrypt"
-                                       " your picture", fg="blue", font="Calibri 11 bold",
+                                       "*** Use the Image2Text Program to Decrypt."
+                                       "\n Enter this number: %s" % objects_info["rand_num"],
+                    fg="blue", font="Calibri 15 bold",
                     width=600, justify=tkinter.LEFT).grid(row=4, column=0, sticky="w", columnspan=2)
     # Button to exit the whole program
     button_show = tkinter.Button(canvas_image, text="Click to"
