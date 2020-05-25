@@ -221,7 +221,7 @@ def show_result(filename_text_image, objects_info):
                     width=600, justify=tkinter.LEFT).grid(row=3, column=0, sticky="w", columnspan=2)
     tkinter.Message(canvas_image, text="\n"
                                        "*** Use the Image2Text Program to Decrypt"
-                                       "your picture", fg="blue", font="Calibri 11 bold",
+                                       " your picture", fg="blue", font="Calibri 11 bold",
                     width=600, justify=tkinter.LEFT).grid(row=4, column=0, sticky="w", columnspan=2)
     button_show = tkinter.Button(canvas_image, text="Click to"
                                                    "\n Exit"

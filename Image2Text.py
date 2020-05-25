@@ -44,8 +44,9 @@ def set_environment(filename_text_image, objects_info):
                                  "\n"
                                  "\n>>> This program extracts text from an image <<<"
                                  "\n"
-                                 "\nTo do that we kindly ask you to select the image file"
-                                 " using the button, you can save the .txt afterwards"
+                                 "\nTo do that, we kindly ask you to select the image file"
+                                 " using the button, you can save the decrypted text"
+                                 " as a .txt file afterwards"
                                  "\n ", width=200, font="Calibri 12",
                     justify=tkinter.CENTER).grid(row=0, column=0, sticky="ew")
     tkinter.Label(canvas, text="Scroll down to see your full text...",
