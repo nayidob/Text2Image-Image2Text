@@ -10,9 +10,9 @@ import operator
 import random
 from PIL import ImageTk
 from PIL import Image
-from nltk.corpus import stopwords
+
 import tkinter.scrolledtext as st
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.filedialog import askopenfilename
 
 
 CANVAS_WIDTH = 600      # Width of drawing canvas in pixels
@@ -20,7 +20,7 @@ CANVAS_HEIGHT = 600     # Height of drawing canvas in pixels
 PUNCTUATION = '.!?,-:;""'
 MAX_COLOR = 255
 MIN_COLOR = 0
-en_stops = set(stopwords.words('english'))
+
 
 
 def main():
