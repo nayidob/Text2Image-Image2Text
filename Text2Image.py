@@ -268,12 +268,15 @@ def put_text_within_image(main_string, final_image, size, objects_info):
     :param main_string: string with ALL the characters of the .txt file
     :param final_image: image that has been resized to fit the whole text on it
     :param size: size of the image to be used in the nested for
+    :param objects_info: Dictionary used to keep information about the objects
+    (size, strings, etc.)
     :return final_image: resulting image with the text on it (alpha channel affected)
     """
     count = 0
     width, height = final_image.size
-    # Load pixels from image
+    # Generates a random number of 6 digits
     create_random(objects_info)
+    # Load pixels from image
     pixels = final_image.load()
     for x in range(width):
         for y in range(height):
@@ -282,11 +285,11 @@ def put_text_within_image(main_string, final_image, size, objects_info):
             if count < (size[2]*size[2]):
                 # Gets the ASCII value of the nth character
                 char_number = get_char(main_string, count)
-                # Puts the ASCII value in the alpha channel.
-                # It was necessary to do 255 - value in order to get a lighter image
+                # Adds the 6-digit random number to the ASCII value
+                # then operates the module and returns a valid number
                 char_number = get_rand(char_number, objects_info)
+                # Puts the encrypted value in the alpha channel.
                 pixels[x, y] = (red, green, blue, char_number)
-                #pixels[x, y] = (red, green, blue, 255 - char_number)
             else:
                 # For the pixels that are redundant, meaning the ones left
                 # after placing the whole text, will be filled with spaces
@@ -298,10 +301,24 @@ def put_text_within_image(main_string, final_image, size, objects_info):
 
 
 def create_random(objects_info):
+    """
+    This function generates a random number of 6 digits
+    :param objects_info: Dictionary used to keep information about the objects
+    (size, strings, etc.)
+    """
     objects_info["rand_num"] = random.randint(MIN_NUM, MAX_NUM)
 
 
 def get_rand(char_number, objects_info):
+    """
+    This function adds the 6-digit random number to the ASCII equivalent and then
+    computes the module in order to get a valid number that can be loaded in
+    the alpha channel.
+    :param char_number: ASCII equivalent
+    :param objects_info: Dictionary used to keep information about the objects
+    (size, strings, etc.)
+    :return rand_eq: Encrypted number within 0-255
+    """
     rand_eq = char_number + objects_info["rand_num"]
     rand_eq = rand_eq % 256
     return rand_eq
