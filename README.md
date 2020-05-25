@@ -17,7 +17,7 @@ It is important to note, that I provide example images but you are
 free to choose the one you prefer. The program will take care of
 the aspect ratio. 
 
-"""
+
 File: Image2Text.py
 ----------------
 This program takes an image that has been previously modified
