@@ -197,7 +197,7 @@ def show_confirmation():
     tkinter.Message(canvas_text, text="\n"
                                       "** Your image has been decrypted"
                                       "\nThe extracted text is in the root directory:"
-                                      "\n%s/Decrypted_Text.png"
+                                      "\n%s/Decrypted_Text.txt"
                                       % (pathlib.Path().absolute()),
                     width=200, justify=tkinter.CENTER).grid(row=1, column=0, sticky="ew", columnspan=2)
     # Button to exit the whole program
